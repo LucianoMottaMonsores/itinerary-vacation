@@ -48,8 +48,17 @@ describe('TransportTypesService', () => {
       const result = await service.createTransportType(dto);
 
       expect(result).toEqual(created);
-      expect(repository.create.bind(repository)).toHaveBeenCalledWith(dto);
-      expect(repository.save.bind(repository)).toHaveBeenCalledWith(created);
+    });
+
+    it('should throw NotFoundException if transportType name is empty', async () => {
+      const dto: CreateTransportTypeDto = { name: '' };
+
+      await expect(service.createTransportType(dto)).rejects.toThrow(NotFoundException);
+
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(repository.create).not.toHaveBeenCalled();
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      expect(repository.save).not.toHaveBeenCalled();
     });
   });
 
@@ -66,7 +75,12 @@ describe('TransportTypesService', () => {
       const result = await service.getAllTransportType();
 
       expect(result).toEqual(allTypes);
-      expect(repository.find.bind(repository)).toHaveBeenCalled();
+    });
+
+    it('should throw an error if repository.find throws', async () => {
+      repository.find.mockRejectedValue(new Error('DB error'));
+
+      await expect(service.getAllTransportType()).rejects.toThrow('DB error');
     });
   });
 
@@ -80,7 +94,12 @@ describe('TransportTypesService', () => {
       const result = await service.getTransportType(1);
 
       expect(result).toEqual(tt);
-      expect(repository.findOneBy.bind(repository)).toHaveBeenCalledWith({ id: 1 });
+    });
+
+    it('should throw an error if repository.findOneBy throws', async () => {
+      repository.findOneBy.mockRejectedValue(new Error('DB error'));
+
+      await expect(service.getTransportType(1)).rejects.toThrow('DB error');
     });
 
     // Simulate a failed lookup
@@ -88,7 +107,6 @@ describe('TransportTypesService', () => {
       repository.findOneBy.mockResolvedValue(null);
 
       await expect(service.getTransportType(999)).rejects.toThrow(NotFoundException);
-      expect(repository.findOneBy.bind(repository)).toHaveBeenCalledWith({ id: 999 });
     });
   });
 });

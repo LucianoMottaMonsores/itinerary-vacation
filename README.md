@@ -1,4 +1,4 @@
-# 🎓 Vacation Itinerary Sorter API
+# 🗺️ Vacation Itinerary Sorter API
 
 This project is a NestJS API that sorts unordered travel tickets into the correct itinerary order. It simulates a fictional backstory involving Kevin, who must follow his family’s planned vacation route across Europe after being accidentally left behind.
 
@@ -21,12 +21,15 @@ Before running this project, ensure the following are installed:
 
 - [Docker](https://www.docker.com/products/docker-desktop)
 - [Docker Compose](https://docs.docker.com/compose/install/)
+- [nvm - Windows Version](https://github.com/coreybutler/nvm-windows/releases)
+
+> **Important:** To run Docker Desktop, you must [create a Docker Hub account](https://hub.docker.com/signup) — a free personal account is sufficient.
 
 > Docker is used to spin up a MySQL container and preload it with the required schema and data. This approach provides portability and eliminates the need to install MySQL manually.
 
 ---
 
-## 🧰 How to Run the Project Locally
+## 🚀 How to Run the Project Locally
 
 ### Step 1: Clone the Repository
 
@@ -35,7 +38,17 @@ git clone https://github.com/your-username/itinerary-vacation.git
 cd itinerary-vacation
 ```
 
-### Step 2: Start Services with Docker Compose
+### Step 2: Install the node 20.16.0
+
+A node version 20.16.0 was used for this project, use the command below:
+
+```bash
+nvm install 20.16.0
+nvm ls ( Will list all node version installed )
+nvm use 20.16.0
+```
+
+### Step 3: Start Services with Docker Compose
 
 ```bash
 docker compose up -d
@@ -51,7 +64,7 @@ This will:
 
 ---
 
-If you need to drop the tables, use the command below:
+If you need to drop the tables for any reason, use the command below:
 
 ```bash
 docker compose down -v
@@ -103,11 +116,19 @@ SELECT * FROM transport_types;
 
 ---
 
-## 🥪 Running Tests
+## 🧪 Running Tests
 
 ```bash
 npm install
 npm run test
+```
+
+---
+
+## 🟢 Start the application
+
+```bash
+npm run start
 ```
 
 ---
@@ -120,7 +141,7 @@ Once the app is running, you can access the documentation at:
 
 ---
 
-## 📦 API Endpoints
+## 📡 API Endpoints
 
 ### `GET /tickets/ordered`
 
@@ -161,7 +182,7 @@ Adds a new ticket to the database.
 }
 ```
 
-## 🩹 How to Add New Transport Types
+## ➕ How to Add New Transport Types
 
 You can add new types (e.g., "boat", "taxi", etc.) by:
 
@@ -245,7 +266,7 @@ src/
 - You do **not** need to install MySQL locally. Docker will handle everything.
 - If desired, you may insert additional tickets manually via the `POST /tickets` endpoint.
 - All seeded data is located inside `docker/mysql-init/init.sql`.
-- - It seems that the result proposed by the "tickets/ordered" request had a typographical error in item 4 (already corrected).
+- It seems that the result proposed by the "tickets/ordered" request had a typographical error in item 4 (already corrected).
 
 ---
 

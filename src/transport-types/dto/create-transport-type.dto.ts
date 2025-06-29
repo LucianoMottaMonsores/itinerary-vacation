@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateTransportTypeDto {
   @ApiProperty({
@@ -7,5 +7,6 @@ export class CreateTransportTypeDto {
     description: 'Name of the type of transport',
   })
   @IsString()
+  @IsNotEmpty()
   name: string;
 }

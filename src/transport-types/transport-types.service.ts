@@ -12,6 +12,10 @@ export class TransportTypesService {
   ) {}
 
   async createTransportType(createDto: CreateTransportTypeDto): Promise<TransportType> {
+    if (!createDto.name || createDto.name.trim() === '') {
+      throw new NotFoundException('Transport type name cannot be empty.');
+    }
+    
     const transportType = this.transportTypeRepository.create(createDto);
     return this.transportTypeRepository.save(transportType);
   }
