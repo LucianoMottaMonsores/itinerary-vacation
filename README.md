@@ -51,6 +51,12 @@ This will:
 
 ---
 
+If you need to drop the tables, use the command below:
+
+```bash
+docker compose down -v
+```
+
 ## 🧾 Database Seed Data 
 
 ## Transport Types table
@@ -64,15 +70,15 @@ This will:
 
 ## Tickets table
 
-| id | transport\_type\_id | departure                         | arrival                           | transport\_number | seat | gate | luggage\_info                                        | additional\_info   | created\_at         |
-| -- | ------------------- | --------------------------------- | --------------------------------- | ----------------- | ---- | ---- | ---------------------------------------------------- | ------------------ | ------------------- |
-| 1  | 1           | St. Anton am Arlberg Bahnhof      | Innsbruck Hbf                     | RJX 765           | 17C  |      |                                                      | Platform 3         | 2025-06-27 12:52:21 |
-| 2  | 2            | Innsbruck Hbf                     | Innsbruck Airport                 | S5                |      |      |                                                      |                    | 2025-06-27 12:52:21 |
-| 3  | 3          | Innsbruck Airport                 | Venice Airport                    | AA904             | 18B  | 10   | Self-check-in luggage at counter                     |                    | 2025-06-27 12:52:21 |
-| 4  | 1           | Gara Venetia Santa Lucia          | Bologna San Ruffillo              | ICN 35780         | 13F  |      |                                                      | Platform 1         | 2025-06-27 12:52:21 |
-| 5  | 4             | Bologna San Ruffillo              | Bologna Guglielmo Marconi Airport |                   |      |      |                                                      | No seat assignment | 2025-06-27 12:52:21 |
-| 6  | 3          | Bologna Guglielmo Marconi Airport | Paris CDG Airport                 | AF1229            | 10A  | 22   | Self-check-in luggage at counter                     |                    | 2025-06-27 12:52:21 |
-| 7  | 3          | Paris CDG Airport                 | Chicago O'Hare                    | AF136             | 10A  | 32   | Luggage will transfer automatically from last flight |                    | 2025-06-27 12:52:21 |
+| id | transport_type_id | departure                         | arrival                           | transport_number | seat | gate | luggage_info                                             | additional_info    | created_at          |
+|----|-------------------|-----------------------------------|-----------------------------------|------------------|------|------|----------------------------------------------------------|--------------------|---------------------|
+| 1  | 3                 | Bologna Guglielmo Marconi Airport | Paris CDG Airport                 | AF1229           | 10A  | 22   | Self-check-in luggage at counter                         | NULL               | 2025-06-29 10:04:00 |
+| 2  | 3                 | Innsbruck Airport                 | Venice Airport                    | AA904            | 18B  | 10   | Self-check-in luggage at counter                         | NULL               | 2025-06-29 10:04:00 |
+| 3  | 1                 | St. Anton am Arlberg Bahnhof      | Innsbruck Hbf                     | RJX 765          | 17C  | NULL | NULL                                                     | Platform 3         | 2025-06-29 10:04:00 |
+| 4  | 4                 | Bologna San Ruffillo              | Bologna Guglielmo Marconi Airport | NULL             | NULL | NULL | NULL                                                     | No seat assignment | 2025-06-29 10:04:00 |
+| 5  | 2                 | Innsbruck Hbf                     | Innsbruck Airport                 | S5               | NULL | NULL | NULL                                                     | NULL               | 2025-06-29 10:04:00 |
+| 6  | 3                 | Paris CDG Airport                 | Chicago O'Hare                    | AF136            | 10A  | 32   | Luggage will transfer automatically from the last flight | NULL               | 2025-06-29 10:04:00 |
+| 7  | 1                 | Venice Airport                    | Bologna San Ruffillo              | ICN 35780        | 13F  | NULL | NULL                                                     | Platform 1         | 2025-06-29 10:04:00 |
 
 ---
 
@@ -134,14 +140,6 @@ Returns the complete itinerary in human-readable order.
 8. Last destination reached.
 ```
 
-### `GET /tickets`
-
-Returns all raw tickets stored in the database (unordered).
-
-### `GET /tickets/{id}`
-
-Returns a tickets stored in the database.
-
 ### `POST /tickets`
 
 Adds a new ticket to the database.
@@ -163,28 +161,13 @@ Adds a new ticket to the database.
 }
 ```
 
-### `PUT /tickets`
+## 🩹 How to Add New Transport Types
 
-Edit a ticket stored in the database.
+You can add new types (e.g., "boat", "taxi", etc.) by:
 
-**Example Payload:**
-
-```json
-{
-  "id": 7,
-  "departure": "Venice Airport"
-}
-```
-
-### `DELETE /tickets/{id}`
-
-Delete a ticket stored in the database.
-
-### `DELETE /tickets`
-
-Delete all tickets stored in the database.
-
----
+- Extending the `Ticket` entity with additional fields.
+- Updating the formatter helper logic to handle new types.
+- Optional: Adjust the Swagger documentation.
 
 ### `POST /transport-types`
 
@@ -198,23 +181,15 @@ Adds a new transport type to the database.
 }
 ```
 
-### `GET /transport-types`
-
-Returns all raw transport types stored in the database.
-
-### `GET /transport-types/{id}`
-
-Returns a transport type stored in the database.
-
 ---
 
-## 🩹 How to Add New Transport Types
+## 🔍 Running Code Analysis (ESLint)
 
-You can add new types (e.g., "boat", "taxi", etc.) by:
+To check the code for style and quality issues using ESLint, run:
 
-- Extending the `Ticket` entity with additional fields.
-- Updating the formatter helper logic to handle new types.
-- Optional: Adjust the Swagger documentation.
+```bash
+npm run lint
+```
 
 ---
 
@@ -230,19 +205,24 @@ src/
 │   ├── entities/
 │   │   └── ticket.entity.ts          # TypeORM Entity definition
 │   ├── helpers/
-│   │   ├── format-itinerary.ts       # format itinerary result
+│   │   ├── format-itinerary.spec.ts  # Format itinerary test
+│   │   ├── format-itinerary.ts       # Format itinerary result
+│   │   ├── ticket-sorter.spec.ts     # Sorting test
 │   │   └── ticket-sorter.ts          # Sorting algorithm
 │   ├── tickets.controller.ts         # Handles HTTP routes
 │   ├── tickets.module.ts             # NestJS module
+│   ├── tickets.service.spec.ts       # Ticket service test
 │   └── tickets.service.ts            # Business logic
 │
 ├── transport-types/
 │   ├── dto/
-│   │   └── create-transport-type.dto.ts
+│   │   ├── create-transport-type.dto.ts
+│   │   └── transport-type.dto.ts      
 │   ├── entities/
 │   │   └── transport-type.entity.ts
 │   ├── transport-types.controller.ts
 │   ├── transport-types.module.ts
+│   ├── transport-types.service.spec.ts
 │   └── transport-types.service.ts
 │
 ├── app.module.ts
@@ -254,7 +234,7 @@ src/
 ## 📌 Assumptions Made
 
 - Each ticket includes a "departure" and "arrival" location.
-- Tickets have valid transport data and form a complete path.
+- Tickets have valid transport type data and form a complete path.
 - Luggage handling details are optional and vary per transport.
 - Ticket times are irrelevant due to extended validity.
 
@@ -264,7 +244,8 @@ src/
 
 - You do **not** need to install MySQL locally. Docker will handle everything.
 - If desired, you may insert additional tickets manually via the `POST /tickets` endpoint.
-- All seeded data is located inside `docker/mysql-init/02_seed_tickets.sql`.
+- All seeded data is located inside `docker/mysql-init/init.sql`.
+- - It seems that the result proposed by the "tickets/ordered" request had a typographical error in item 4 (already corrected).
 
 ---
 

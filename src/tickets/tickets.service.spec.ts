@@ -12,6 +12,9 @@ import { CreateTicketDto } from './dto/create-ticket.dto';
 jest.mock('./helpers/ticket-sorter');
 jest.mock('./helpers/format-itinerary');
 
+/* Mocks are set up to simulate TypeORM repositories and query builders
+ * This enables testing service logic in isolation without a real DB
+ */
 describe('TicketsService', () => {
   let service: TicketsService;
   let ticketsRepository: jest.Mocked<Repository<Ticket>>;
@@ -40,7 +43,7 @@ describe('TicketsService', () => {
       providers: [
         TicketsService,
         {
-          provide: getRepositoryToken(Ticket),
+          provide: getRepositoryToken(Ticket), // Provide a mocked repository using getRepositoryToken
           useValue: {
             create: jest.fn(),
             save: jest.fn(),
@@ -71,6 +74,10 @@ describe('TicketsService', () => {
     expect(service).toBeDefined();
   });
 
+  /* This test simulates the creation of a new ticket:
+   * 1. It mocks the existence of the related transport type.
+   * 2. It checks if the ticket is correctly created and persisted.
+   */
   describe('createTicket', () => {
     it('should create and return a ticket', async () => {
       const dto: CreateTicketDto = {
@@ -95,6 +102,9 @@ describe('TicketsService', () => {
       expect(result).toEqual(createdTicket);
     });
 
+    /* Tests the error handling when an invalid transport type is provided.
+     * Ensures the service throws NotFoundException as expected.
+     */
     it('should throw if transportType not found', async () => {
       const dto: CreateTicketDto = {
         departure: 'A',
@@ -107,6 +117,12 @@ describe('TicketsService', () => {
     });
   });
 
+  /* This test verifies that the custom query builder returns tickets
+   * with joined transportType names. It checks:
+   * - leftJoin
+   * - select
+   * - getMany
+   */
   describe('getAllTickets', () => {
     it('should return all tickets', async () => {
       const tickets = [{ id: 1 }, { id: 2 }] as Ticket[];
@@ -126,6 +142,9 @@ describe('TicketsService', () => {
     });
   });
 
+  /* This test validates fetching a single ticket by ID using a custom query,
+   * ensuring it returns expected fields including joined transportType.
+   */
   describe('getTicket', () => {
     it('should return a ticket', async () => {
       const ticket = { id: 1 } as Ticket;
@@ -147,6 +166,7 @@ describe('TicketsService', () => {
       expect(mockQueryBuilder.getOne).toHaveBeenCalled();
     });
 
+    // Ensures NotFoundException is thrown when the ticket doesn't exist.
     it('should throw if ticket not found', async () => {
       mockQueryBuilder.getOne.mockResolvedValue(undefined);
 
@@ -154,6 +174,12 @@ describe('TicketsService', () => {
     });
   });
 
+  /* Integration to get a list of itinerary orders :
+   * 1. It mocks fetching tickets from DB.
+   * 2. It mocks sorting via `sortTickets`.
+   * 3. It mocks formatting via `formatItinerary`.
+   * Final output should match the formatted result
+   */
   describe('getOrderedTickets', () => {
     it('should return formatted itinerary', async () => {
       const tickets = [{ id: 1 }, { id: 2 }] as Ticket[];
@@ -169,6 +195,11 @@ describe('TicketsService', () => {
     });
   });
 
+  /* Checks successful ticket update:
+   * - Locates the original ticket.
+   * - Finds and applies new transport type.
+   * - Fetches the updated result.
+   */
   describe('updateTicket', () => {
     it('should update and return ticket', async () => {
       const existing = { id: 1 } as Ticket;
@@ -185,11 +216,13 @@ describe('TicketsService', () => {
       expect(result).toEqual(updated);
     });
 
+    // Verifies behavior when the ticket to update does not exist.
     it('should throw if ticket not found', async () => {
       ticketsRepository.findOneBy.mockResolvedValue(null);
       await expect(service.updateTicket(999, {})).rejects.toThrow(NotFoundException);
     });
 
+    // Verifies validation logic for non-existent transport type during update.
     it('should throw if transport type not found', async () => {
       ticketsRepository.findOneBy.mockResolvedValue({ id: 1 } as Ticket);
       transportTypeRepository.findOne.mockResolvedValue(null);
@@ -198,6 +231,9 @@ describe('TicketsService', () => {
       );
     });
 
+    /* Edge case: ticket exists before update but is not found afterward.
+     * Ensures service remains resilient to this inconsistency.
+     */
     it('should throw if ticket not found after update', async () => {
       ticketsRepository.findOneBy.mockResolvedValue({ id: 1 } as Ticket);
       transportTypeRepository.findOne.mockResolvedValue({
@@ -211,6 +247,7 @@ describe('TicketsService', () => {
     });
   });
 
+  // Simple test to confirm the repository's delete method is invoked correctly.
   describe('deleteTicket', () => {
     it('should delete a ticket', async () => {
       await service.deleteTicket(1);
@@ -219,6 +256,7 @@ describe('TicketsService', () => {
     });
   });
 
+  // Confirms the repository's clear method is triggered.
   describe('deleteAllTickets', () => {
     it('should clear all tickets', async () => {
       await service.deleteAllTickets();

@@ -7,7 +7,7 @@ export class UpdateTicketDto {
   departure?: string;
 
   @IsOptional()
-  destination?: string;
+  arrival?: string;
 
   @IsOptional()
   @ValidateNested()

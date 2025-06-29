@@ -28,14 +28,14 @@ INSERT INTO transport_types (name) VALUES
 
 INSERT INTO tickets (transport_type_id, departure, arrival, transport_number, seat, gate, luggage_info, additional_info)
 VALUES
--- Step 1: Train from St. Anton to Innsbruck
-(1, 'St. Anton am Arlberg Bahnhof', 'Innsbruck Hbf', 'RJX 765', '17C', NULL, NULL, 'Platform 3'),
-
 -- Step 6: Flight to Paris
 (3, 'Bologna Guglielmo Marconi Airport', 'Paris CDG Airport', 'AF1229', '10A', '22', 'Self-check-in luggage at counter', NULL),
 
 -- Step 3: Flight to Venice
 (3, 'Innsbruck Airport', 'Venice Airport', 'AA904', '18B', '10', 'Self-check-in luggage at counter', NULL),
+
+-- Step 1: Train from St. Anton to Innsbruck
+(1, 'St. Anton am Arlberg Bahnhof', 'Innsbruck Hbf', 'RJX 765', '17C', NULL, NULL, 'Platform 3'),
 
 -- Step 5: Bus to Bologna Airport
 (4, 'Bologna San Ruffillo', 'Bologna Guglielmo Marconi Airport', NULL, NULL, NULL, NULL, 'No seat assignment'),

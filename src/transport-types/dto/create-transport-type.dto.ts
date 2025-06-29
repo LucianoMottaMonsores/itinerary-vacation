@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString, MinLength } from 'class-validator';
+import { IsString } from 'class-validator';
 
 export class CreateTransportTypeDto {
   @ApiProperty({
@@ -7,6 +7,5 @@ export class CreateTransportTypeDto {
     description: 'Name of the type of transport',
   })
   @IsString()
-  @MinLength(2)
   name: string;
 }
