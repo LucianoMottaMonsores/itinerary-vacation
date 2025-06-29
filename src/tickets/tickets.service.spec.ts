@@ -181,7 +181,7 @@ describe('TicketsService', () => {
    * Final output should match the formatted result
    */
   describe('getOrderedTickets', () => {
-    it('should return formatted itinerary', async () => {
+    it('should return formatted itinerary as a single string with lines separated by newline', async () => {
       const tickets = [{ id: 1 }, { id: 2 }] as Ticket[];
       const sorted = [{ id: 2 }, { id: 1 }] as Ticket[];
       const itinerary = ['Take flight from A to B', 'Take flight from B to C'];
@@ -191,7 +191,9 @@ describe('TicketsService', () => {
       (formatItinerary as jest.Mock).mockReturnValue(itinerary);
 
       const result = await service.getOrderedTickets();
-      expect(result).toEqual(itinerary);
+      const expected = itinerary.join('\n');
+
+      expect(result).toEqual(expected);
     });
   });
 

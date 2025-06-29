@@ -62,13 +62,13 @@ export class TicketsService {
     return ticket;
   }
 
-  async getOrderedTickets(): Promise<string[]> {
+  async getOrderedTickets(): Promise<string> {
     const tickets = await this.ticketsRepository.find({
       relations: ['transportType'],
     });
     const sortedTickets = sortTickets(tickets); // algorithm to sort tickets into a logical travel sequence
     const itinerary = formatItinerary(sortedTickets); // formats the result into readable itinerary list
-    return itinerary;
+    return itinerary.join('\n');;
   }
 
   async updateTicket(id: number, updateTicketDto: UpdateTicketDto): Promise<Ticket> {
