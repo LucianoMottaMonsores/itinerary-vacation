@@ -66,9 +66,13 @@ export class TicketsService {
     const tickets = await this.ticketsRepository.find({
       relations: ['transportType'],
     });
+
+    if (tickets.length === 0) {
+      return 'No travel itinerary found. Please add tickets to generate a route.';
+    }
     const sortedTickets = sortTickets(tickets); // algorithm to sort tickets into a logical travel sequence
     const itinerary = formatItinerary(sortedTickets); // formats the result into readable itinerary list
-    return itinerary.join('\n');;
+    return itinerary.join('\n');
   }
 
   async updateTicket(id: number, updateTicketDto: UpdateTicketDto): Promise<Ticket> {

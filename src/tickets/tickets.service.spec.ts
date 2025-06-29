@@ -195,6 +195,14 @@ describe('TicketsService', () => {
 
       expect(result).toEqual(expected);
     });
+
+    it('should return a friendly message when there are no tickets', async () => {
+      ticketsRepository.find.mockResolvedValue([]);
+      
+      const result = await service.getOrderedTickets();
+
+      expect(result).toBe('No travel itinerary found. Please add tickets to generate a route.');
+    });
   });
 
   /* Checks successful ticket update:
