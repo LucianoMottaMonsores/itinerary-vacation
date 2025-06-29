@@ -38,14 +38,14 @@ git clone https://github.com/your-username/itinerary-vacation.git
 cd itinerary-vacation
 ```
 
-### Step 2: Install the node 20.16.0
+### Step 2: Install and Use Node.js 20.16.0
 
-A node version 20.16.0 was used for this project, use the command below:
+This project requires Node.js version 20.16.0. You can manage Node versions using nvm:
 
 ```bash
-nvm install 20.16.0
-nvm ls ( Will list all node version installed )
-nvm use 20.16.0
+nvm ls              # Lists all installed Node.js versions
+nvm install 20.16.0 # Installs Node.js 20.16.0 if not already installed
+nvm use 20.16.0     # Switches to Node.js 20.16.0
 ```
 
 ### Step 3: Start Services with Docker Compose
